@@ -536,12 +536,15 @@ export default function InvitationCard({ onClose, onCelebrate }) {
                   {/* Interactive Action Buttons */}
                   <div className="action-row">
                     <button
-                      className="action-btn spark-btn"
+                      className="action-btn spark-btn celebrate-spark-btn"
                       onClick={handleCelebrate}
-                      title="Celebrate with Sparkles"
+                      title="Click here for a Grand Diwali Surprise!"
                     >
                       <span className="btn-sparkle">✨</span>
-                      <span>Celebrate Diwali</span>
+                      <div className="spark-btn-content">
+                        <span className="spark-btn-main">Celebrate Diwali</span>
+                        <span className="spark-btn-surprise">🎁 Click for Surprise! 🎆</span>
+                      </div>
                       <span className="btn-sparkle">🪔</span>
                     </button>
 
@@ -560,6 +563,13 @@ export default function InvitationCard({ onClose, onCelebrate }) {
                     >
                       <span>🔗 Share</span>
                     </button>
+                  </div>
+
+                  {/* Pulsing Surprise Callout Below the Button */}
+                  <div className="surprise-callout-strip" onClick={handleCelebrate} title="Click to unlock festive surprise!">
+                    <span className="surprise-icon-anim">✨</span>
+                    <span className="surprise-text">Click <strong>"Celebrate Diwali"</strong> above for an exclusive festive surprise!</span>
+                    <span className="surprise-tag-badge">SURPRISE 🎁</span>
                   </div>
                 </div>
 
