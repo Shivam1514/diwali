@@ -517,9 +517,10 @@ export default function RamayanaDroneShow({ onClose }) {
           <button
             className="ctrl-btn source-switch-btn"
             onClick={toggleVideoMode}
-            title="Switch between Local Clip and Direct YouTube Player"
+            title={videoMode === 'local' ? 'Switch to YouTube Stream' : 'Switch to Local HD'}
           >
-            {videoMode === 'local' ? '⚡ Local HD' : '📺 YouTube Stream'}
+            <span className="btn-full-text">{videoMode === 'local' ? '⚡ Local HD' : '📺 YouTube'}</span>
+            <span className="btn-mobile-icon">{videoMode === 'local' ? '⚡' : '📺'}</span>
           </button>
 
           {/* Devotional Bhajan Toggle */}
@@ -528,7 +529,8 @@ export default function RamayanaDroneShow({ onClose }) {
             onClick={toggleBhajan}
             title={isBhajanMuted ? 'Play Ram Siya Ram Bhajan' : 'Mute Bhajan'}
           >
-            {isBhajanMuted ? '🔇 Bhajan' : '🎵 Ram Siya Ram'}
+            <span className="btn-full-text">{isBhajanMuted ? '🔇 Bhajan' : '🎵 Ram Siya Ram'}</span>
+            <span className="btn-mobile-icon">{isBhajanMuted ? '🔇' : '🎵'}</span>
           </button>
 
           {/* Fireworks Sound Toggle */}
@@ -537,7 +539,8 @@ export default function RamayanaDroneShow({ onClose }) {
             onClick={toggleSfx}
             title={isSfxMuted ? 'Unmute Fireworks Sound' : 'Mute Fireworks Sound'}
           >
-            {isSfxMuted ? '💥 SFX Muted' : '💥 SFX On'}
+            <span className="btn-full-text">{isSfxMuted ? '💥 SFX Off' : '💥 SFX On'}</span>
+            <span className="btn-mobile-icon">{isSfxMuted ? '🔇' : '💥'}</span>
           </button>
 
           {/* Play/Pause Video */}
@@ -546,7 +549,7 @@ export default function RamayanaDroneShow({ onClose }) {
             onClick={togglePlayPause}
             title={isPlaying ? 'Pause' : 'Resume'}
           >
-            {isPlaying ? '⏸' : '▶'}
+            <span>{isPlaying ? '⏸' : '▶'}</span>
           </button>
 
           {/* Exit Show */}
@@ -555,7 +558,8 @@ export default function RamayanaDroneShow({ onClose }) {
             onClick={onClose}
             title="Return to Invitation Card"
           >
-            ✕ Exit Show
+            <span className="btn-full-text">✕ Exit</span>
+            <span className="btn-mobile-icon">✕</span>
           </button>
         </div>
       </header>

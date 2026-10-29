@@ -1492,78 +1492,128 @@ body {
 /* Tablet & Mobile Screens */
 @media (max-width: 859px) {
   .card-scene {
-    width: min(500px, 94vw);
+    width: min(480px, 94vw);
     max-height: 94vh;
   }
   .card-inner {
+    overflow-x: hidden;
     overflow-y: auto;
     max-height: 90vh;
   }
   .auspicious-trio-row {
-    gap: 12px;
+    gap: 10px;
   }
   .shubh-labh-emblem {
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
   }
   .emblem-text {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
   }
   .card-body-grid {
     grid-template-columns: 1fr;
     gap: 8px;
   }
   .upper-decoration-container {
-    height: 65px;
-    padding: 0 8px;
+    height: 58px;
+    padding: 0 6px;
   }
   .hanging-group {
-    gap: 8px;
+    gap: 6px;
+  }
+  .hanging-group .hanging-lamp-unit:last-child {
+    display: none;
   }
   .left-group {
-    padding-left: 2px;
+    padding-left: 0;
   }
   .right-group {
-    padding-right: 2px;
+    padding-right: 0;
   }
   .diyas-track {
-    overflow-x: auto;
+    overflow-x: hidden;
+    justify-content: space-around;
     padding-bottom: 2px;
+  }
+  .live-diya-unit:nth-child(even) {
+    display: none;
+  }
+  .action-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    width: 100%;
+  }
+  .spark-btn {
+    grid-column: 1 / -1;
+    width: 100%;
+    padding: 8px 12px;
+  }
+  .cal-btn, .share-btn {
+    width: 100%;
+    padding: 7px 8px;
+    font-size: 0.72rem;
+  }
+  .surprise-callout-strip {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 3px 6px;
+  }
+  .surprise-text {
+    font-size: 0.6rem;
+    line-height: 1.25;
   }
 }
 
 /* Small mobile devices */
 @media (max-width: 480px) {
   .card-content {
-    padding: 2px 10px 10px;
-    gap: 6px;
+    padding: 2px 8px 8px;
+    gap: 5px;
   }
   .hero-title {
-    font-size: 1.4rem;
+    font-size: clamp(1.2rem, 5.5vw, 1.45rem);
   }
   .auspicious-trio-row {
-    gap: 8px;
+    gap: 6px;
   }
   .shubh-labh-emblem {
-    width: 38px;
-    height: 38px;
+    width: 34px;
+    height: 34px;
   }
   .emblem-text {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
+  }
+  .invite-note {
+    font-size: 0.8rem;
+    padding: 3px 6px;
+  }
+  .coords-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+  }
+  .coord-chip {
+    padding: 4px 6px;
+    gap: 5px;
+  }
+  .coord-title {
+    font-size: 0.72rem;
+  }
+  .coord-desc {
+    font-size: 0.58rem;
   }
   .lineup-grid {
     grid-template-columns: 1fr;
-    gap: 4px;
+    gap: 3px;
   }
-  .coords-grid {
-    grid-template-columns: 1fr;
-    gap: 4px;
+  .lineup-tile {
+    padding: 4px 7px;
   }
-  .action-row {
-    flex-wrap: wrap;
+  .lineup-tile-title {
+    font-size: 0.72rem;
   }
-  .spark-btn {
-    flex: 1 1 100%;
+  .lineup-tile-desc {
+    font-size: 0.6rem;
   }
 }
 
@@ -2008,44 +2058,111 @@ body {
 }
 
 /* Responsive adjustments for mobile in Drone Show */
+.btn-mobile-icon {
+  display: none;
+}
+
+.btn-full-text {
+  display: inline;
+}
+
 @media (max-width: 768px) {
+  .btn-mobile-icon {
+    display: inline;
+    font-size: 0.95rem;
+  }
+  .btn-full-text {
+    display: none;
+  }
+
   .drone-top-bar {
-    padding: 10px 14px;
+    padding: 8px 12px;
+    height: 48px;
+    align-items: center;
   }
-  .drone-main-heading {
-    font-size: 0.8rem;
+
+  .drone-title-block {
+    gap: 0;
+    max-width: calc(100% - 170px);
   }
+
   .drone-show-badge {
-    font-size: 0.55rem;
+    font-size: 0.52rem;
+    letter-spacing: 0.8px;
   }
-  .drone-bottom-hud {
-    bottom: 10px;
-    padding: 6px 12px;
+
+  .drone-main-heading {
+    font-size: 0.76rem;
+    letter-spacing: 0.8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .drone-controls-group {
+    gap: 5px;
+    flex-shrink: 0;
+  }
+
+  .ctrl-btn {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    font-size: 0.85rem;
+    min-width: 32px;
+    border-radius: 50%;
+  }
+
+  .source-switch-btn,
+  .bhajan-btn,
+  .mute-btn,
+  .play-btn,
+  .close-drone-btn {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    min-width: 32px;
+    border-radius: 50%;
+  }
+
+  .drone-theater-stage {
+    padding: 50px 10px 52px;
+  }
+
+  .theater-video-card {
+    width: min(88vw, 320px);
+    height: auto;
+    max-height: 60vh;
+    aspect-ratio: 9 / 16;
     border-radius: 16px;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 8px;
+    border-width: 1.5px;
   }
+
+  .drone-bottom-hud {
+    bottom: 8px;
+    width: min(94vw, 390px);
+    padding: 4px 12px;
+    border-radius: 999px;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .hud-steps,
+  .hud-nav {
+    display: none;
+  }
+
   .hud-caption {
-    order: -1;
     width: 100%;
     justify-content: center;
   }
+
   .hud-sanskrit {
-    font-size: 0.9rem;
-  }
-  .hud-subtitle {
     font-size: 0.72rem;
-  }
-  .hud-steps {
-    justify-content: center;
-  }
-  .hud-pill {
-    font-size: 0.58rem;
-    padding: 3px 8px;
-  }
-  .hud-nav-btn {
-    font-size: 0.6rem;
-    padding: 4px 10px;
+    letter-spacing: 0.4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
   }
 }
