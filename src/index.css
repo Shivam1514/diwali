@@ -1489,93 +1489,55 @@ body {
   }
 }
 
-/* Tablet & Mobile Screens */
+/* Tablet & Mobile Screens (Ultra-Refined Mobile Luxury Event Pass) */
 @media (max-width: 859px) {
   .card-scene {
-    width: min(480px, 94vw);
+    width: min(440px, 94vw);
     max-height: 94vh;
+    margin: 0 auto;
   }
   .card-inner {
     overflow-x: hidden;
     overflow-y: auto;
-    max-height: 90vh;
+    max-height: 92vh;
+    border-radius: 16px;
+    -webkit-overflow-scrolling: touch;
   }
-  .auspicious-trio-row {
-    gap: 10px;
-  }
-  .shubh-labh-emblem {
-    width: 40px;
-    height: 40px;
-  }
-  .emblem-text {
-    font-size: 0.9rem;
-  }
-  .card-body-grid {
-    grid-template-columns: 1fr;
-    gap: 8px;
+  .card-content {
+    padding: 2px 10px 10px;
+    gap: 6px;
   }
   .upper-decoration-container {
-    height: 58px;
-    padding: 0 6px;
+    height: 48px;
+    padding: 0 4px;
   }
   .hanging-group {
-    gap: 6px;
+    gap: 4px;
   }
   .hanging-group .hanging-lamp-unit:last-child {
     display: none;
   }
-  .left-group {
-    padding-left: 0;
+  .hanging-toran-center {
+    width: 80px;
+    height: 40px;
   }
-  .right-group {
-    padding-right: 0;
+  .left-group, .right-group {
+    padding: 0;
   }
-  .diyas-track {
-    overflow-x: hidden;
-    justify-content: space-around;
-    padding-bottom: 2px;
+  .vip-pill-wrap {
+    margin-bottom: 2px;
   }
-  .live-diya-unit:nth-child(even) {
-    display: none;
+  .vip-badge {
+    font-size: 0.56rem;
+    padding: 2px 8px;
+    letter-spacing: 1px;
   }
-  .action-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6px;
-    width: 100%;
-  }
-  .spark-btn {
-    grid-column: 1 / -1;
-    width: 100%;
-    padding: 8px 12px;
-  }
-  .cal-btn, .share-btn {
-    width: 100%;
-    padding: 7px 8px;
-    font-size: 0.72rem;
-  }
-  .surprise-callout-strip {
-    width: 100%;
-    box-sizing: border-box;
-    padding: 3px 6px;
-  }
-  .surprise-text {
-    font-size: 0.6rem;
-    line-height: 1.25;
-  }
-}
-
-/* Small mobile devices */
-@media (max-width: 480px) {
-  .card-content {
-    padding: 2px 8px 8px;
-    gap: 5px;
-  }
-  .hero-title {
-    font-size: clamp(1.2rem, 5.5vw, 1.45rem);
+  .vip-subtag {
+    font-size: 0.5rem;
   }
   .auspicious-trio-row {
-    gap: 6px;
+    gap: 8px;
+    margin: 1px 0;
   }
   .shubh-labh-emblem {
     width: 34px;
@@ -1584,17 +1546,82 @@ body {
   .emblem-text {
     font-size: 0.8rem;
   }
+  .emblem-sublabel {
+    display: none;
+  }
+  .emblem-crest {
+    width: 50px;
+    height: 50px;
+  }
+  .crest-img {
+    width: 44px;
+    height: 44px;
+  }
+  .sanskrit-chant {
+    font-size: 0.68rem;
+    letter-spacing: 0.8px;
+    margin-top: -1px;
+  }
+  .shubh-glow {
+    font-size: 0.68rem;
+    letter-spacing: 2px;
+  }
+  .hero-title {
+    font-size: clamp(1.25rem, 5.5vw, 1.55rem);
+    line-height: 1.1;
+  }
+  .hero-tagline {
+    font-size: 0.72rem;
+    letter-spacing: 0.8px;
+  }
+  .card-body-grid {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+  .body-col-left, .body-col-right {
+    gap: 6px;
+  }
   .invite-note {
-    font-size: 0.8rem;
-    padding: 3px 6px;
+    font-size: 0.75rem;
+    line-height: 1.35;
+    padding: 4px 8px;
+    margin: 1px 0;
+  }
+  .countdown-section {
+    gap: 2px;
+  }
+  .countdown-title {
+    font-size: 0.52rem;
+    letter-spacing: 1.5px;
+  }
+  .countdown-pods {
+    gap: 4px;
+  }
+  .time-pod {
+    max-width: 54px;
+    padding: 3px 2px;
+    border-radius: 6px;
+  }
+  .time-val {
+    font-size: 1.05rem;
+  }
+  .time-lbl {
+    font-size: 0.46rem;
   }
   .coords-grid {
     grid-template-columns: 1fr 1fr;
     gap: 4px;
   }
   .coord-chip {
-    padding: 4px 6px;
-    gap: 5px;
+    padding: 5px 7px;
+    border-radius: 8px;
+    gap: 6px;
+  }
+  .coord-icon-box {
+    font-size: 1.05rem;
+  }
+  .coord-tag {
+    font-size: 0.46rem;
   }
   .coord-title {
     font-size: 0.72rem;
@@ -1602,18 +1629,137 @@ body {
   .coord-desc {
     font-size: 0.58rem;
   }
+  .lineup-container {
+    padding: 6px 8px;
+    border-radius: 10px;
+  }
+  .lineup-header {
+    margin-bottom: 4px;
+  }
+  .lineup-title {
+    font-size: 0.68rem;
+  }
+  .lineup-badge {
+    font-size: 0.52rem;
+    padding: 1px 5px;
+  }
   .lineup-grid {
-    grid-template-columns: 1fr;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+  }
+  .lineup-tile {
+    padding: 5px 6px;
+    border-radius: 8px;
+    background: rgba(55, 5, 14, 0.78);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  .lineup-top {
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+  .lineup-tile-icon {
+    font-size: 1rem;
+  }
+  .lineup-tile-title {
+    font-size: 0.68rem;
+    line-height: 1.2;
+    text-align: center;
+  }
+  .lineup-tile-desc {
+    display: none; /* Eliminates verbose clutter on mobile so the card stays clean and compact */
+  }
+  .action-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    width: 100%;
+    margin-top: 2px;
+  }
+  .spark-btn {
+    grid-column: 1 / -1;
+    width: 100%;
+    padding: 9px 12px;
+    border-radius: 999px;
+  }
+  .spark-btn-main {
+    font-size: 0.88rem;
+    font-weight: 800;
+  }
+  .spark-btn-surprise {
+    font-size: 0.58rem;
+    font-weight: 800;
+  }
+  .cal-btn, .share-btn {
+    width: 100%;
+    padding: 7px 8px;
+    font-size: 0.72rem;
+    border-radius: 999px;
+  }
+  .surprise-callout-strip {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 4px 8px;
+    margin-top: 3px;
+    border-radius: 8px;
+  }
+  .surprise-text {
+    font-size: 0.62rem;
+    line-height: 1.25;
+  }
+  .card-footer {
+    padding: 3px 6px;
+    margin-top: 2px;
+  }
+  .footer-company {
+    font-size: 0.72rem;
+  }
+  .footer-motto {
+    font-size: 0.66rem;
+  }
+  .bottom-diyas-banner {
+    padding: 4px 6px 8px;
+    overflow-x: hidden;
+    width: 100%;
+  }
+  .diyas-track {
+    overflow-x: hidden;
+    justify-content: space-around;
+    padding-bottom: 0;
+  }
+  .live-diya-unit:nth-child(even) {
+    display: none;
+  }
+}
+
+/* Extra small mobile screens (iPhone SE, small Galaxy) */
+@media (max-width: 380px) {
+  .card-content {
+    padding: 2px 6px 6px;
+    gap: 4px;
+  }
+  .hero-title {
+    font-size: 1.2rem;
+  }
+  .invite-note {
+    font-size: 0.7rem;
+  }
+  .coords-grid {
+    gap: 3px;
+  }
+  .coord-chip {
+    padding: 3px 5px;
+  }
+  .lineup-grid {
     gap: 3px;
   }
   .lineup-tile {
-    padding: 4px 7px;
-  }
-  .lineup-tile-title {
-    font-size: 0.72rem;
-  }
-  .lineup-tile-desc {
-    font-size: 0.6rem;
+    padding: 4px 5px;
   }
 }
 

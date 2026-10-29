@@ -160,11 +160,12 @@ class RealisticSoundEngine {
 }
 
 const sfxEngine = new RealisticSoundEngine();
+sfxEngine.muted = true; // Automatically mute fireworks sound by default
 
 export default function RamayanaDroneShow({ onClose }) {
   const [videoMode, setVideoMode] = useState('local'); // 'local' or 'youtube'
   const [isBhajanMuted, setIsBhajanMuted] = useState(false);
-  const [isSfxMuted, setIsSfxMuted] = useState(false);
+  const [isSfxMuted, setIsSfxMuted] = useState(true); // Automatically muted!
   const [isPlaying, setIsPlaying] = useState(true);
 
   const videoRef = useRef(null);
