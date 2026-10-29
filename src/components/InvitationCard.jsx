@@ -533,43 +533,45 @@ export default function InvitationCard({ onClose, onCelebrate }) {
                     </div>
                   </div>
 
-                  {/* Interactive Action Buttons */}
-                  <div className="action-row">
-                    <button
-                      className="action-btn spark-btn celebrate-spark-btn"
-                      onClick={handleCelebrate}
-                      title="Click here for a Grand Diwali Surprise!"
-                    >
-                      <span className="btn-sparkle">✨</span>
-                      <div className="spark-btn-content">
-                        <span className="spark-btn-main">Celebrate Diwali</span>
-                        <span className="spark-btn-surprise">🎁 Click for Surprise! 🎆</span>
-                      </div>
-                      <span className="btn-sparkle">🪔</span>
-                    </button>
+                  {/* Desktop Inline Actions (Hidden on Mobile, Displayed on Desktop) */}
+                  <div className="card-actions-wrapper desktop-inline-actions">
+                    <div className="action-row">
+                      <button
+                        className="action-btn spark-btn celebrate-spark-btn"
+                        onClick={handleCelebrate}
+                        title="Click here for a Grand Diwali Surprise!"
+                      >
+                        <span className="btn-sparkle">✨</span>
+                        <div className="spark-btn-content">
+                          <span className="spark-btn-main">Celebrate Diwali</span>
+                          <span className="spark-btn-surprise">🎁 Click for Surprise! 🎆</span>
+                        </div>
+                        <span className="btn-sparkle">🪔</span>
+                      </button>
 
-                    <button
-                      className="action-btn cal-btn"
-                      onClick={handleAddToCalendar}
-                      title="Add to Google Calendar"
-                    >
-                      <span>📅 Calendar</span>
-                    </button>
+                      <button
+                        className="action-btn cal-btn"
+                        onClick={handleAddToCalendar}
+                        title="Add to Google Calendar"
+                      >
+                        <span>📅 Calendar</span>
+                      </button>
 
-                    <button
-                      className="action-btn share-btn"
-                      onClick={handleShare}
-                      title="Copy Invitation Details"
-                    >
-                      <span>🔗 Share</span>
-                    </button>
-                  </div>
+                      <button
+                        className="action-btn share-btn"
+                        onClick={handleShare}
+                        title="Copy Invitation Details"
+                      >
+                        <span>🔗 Share</span>
+                      </button>
+                    </div>
 
-                  {/* Pulsing Surprise Callout Below the Button */}
-                  <div className="surprise-callout-strip" onClick={handleCelebrate} title="Click to unlock festive surprise!">
-                    <span className="surprise-icon-anim">✨</span>
-                    <span className="surprise-text">Click <strong>"Celebrate Diwali"</strong> above for an exclusive festive surprise!</span>
-                    <span className="surprise-tag-badge">SURPRISE 🎁</span>
+                    {/* Non-flickering Surprise Callout Below the Button */}
+                    <div className="surprise-callout-strip" onClick={handleCelebrate} title="Click to unlock festive surprise!">
+                      <span className="surprise-icon-anim">✨</span>
+                      <span className="surprise-text">Click <strong>"Celebrate Diwali"</strong> above for an exclusive festive surprise!</span>
+                      <span className="surprise-tag-badge">SURPRISE 🎁</span>
+                    </div>
                   </div>
                 </div>
 
@@ -584,6 +586,47 @@ export default function InvitationCard({ onClose, onCelebrate }) {
               </footer>
 
             </div>{/* /card-content */}
+
+            {/* ══════════ MOBILE DOCKED ACTIONS (Always Regularly Displayed on Mobile) ══════════ */}
+            <div className="card-actions-wrapper mobile-docked-actions">
+              <div className="action-row">
+                <button
+                  className="action-btn spark-btn celebrate-spark-btn"
+                  onClick={handleCelebrate}
+                  title="Click here for a Grand Diwali Surprise!"
+                >
+                  <span className="btn-sparkle">✨</span>
+                  <div className="spark-btn-content">
+                    <span className="spark-btn-main">Celebrate Diwali</span>
+                    <span className="spark-btn-surprise">🎁 Click for Surprise! 🎆</span>
+                  </div>
+                  <span className="btn-sparkle">🪔</span>
+                </button>
+
+                <button
+                  className="action-btn cal-btn"
+                  onClick={handleAddToCalendar}
+                  title="Add to Google Calendar"
+                >
+                  <span>📅 Calendar</span>
+                </button>
+
+                <button
+                  className="action-btn share-btn"
+                  onClick={handleShare}
+                  title="Copy Invitation Details"
+                >
+                  <span>🔗 Share</span>
+                </button>
+              </div>
+
+              {/* Steady Surprise Callout Below the Button */}
+              <div className="surprise-callout-strip" onClick={handleCelebrate} title="Click to unlock festive surprise!">
+                <span className="surprise-icon-anim">✨</span>
+                <span className="surprise-text">Click <strong>"Celebrate Diwali"</strong> above for an exclusive festive surprise!</span>
+                <span className="surprise-tag-badge">SURPRISE 🎁</span>
+              </div>
+            </div>
 
             {/* ══════════ BOTTOM LIVE DIYAS ROW ══════════ */}
             <div className="bottom-diyas-banner">

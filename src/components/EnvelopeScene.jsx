@@ -106,7 +106,7 @@ export default function EnvelopeScene({ onClick, isOpen }) {
       </div>
 
       {/* Bottom deco row */}
-      <div style={{ display: 'flex', gap: '10px', pointerEvents: 'none' }}>
+      <div className="env-bottom-deco" style={{ display: 'flex', gap: '10px', pointerEvents: 'none' }}>
         {['🌺', '🪔', '🌸', '🪔', '🌺'].map((e, i) => (
           <span key={i} style={{
             fontSize: i % 2 === 0 ? '1.1rem' : '1.35rem',
