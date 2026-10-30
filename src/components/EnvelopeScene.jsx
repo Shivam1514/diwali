@@ -1,7 +1,5 @@
 import React, { useRef, useState } from 'react';
 
-const GARLAND = Array.from({ length: 13 }, (_, i) => i);
-
 export default function EnvelopeScene({ onClick, isOpen }) {
   const [hovered, setHovered] = useState(false);
   const envRef = useRef(null);
@@ -12,10 +10,10 @@ export default function EnvelopeScene({ onClick, isOpen }) {
     const r = el.getBoundingClientRect();
     const x = (e.clientX - r.left) / r.width - 0.5;
     const y = (e.clientY - r.top) / r.height - 0.5;
-    el.style.transform = `rotateY(${x * 13}deg) rotateX(${-y * 10}deg) scale(1.04) translateY(-8px)`;
+    el.style.transform = `rotateY(${x * 14}deg) rotateX(${-y * 10}deg) scale(1.03) translateY(-6px)`;
     el.style.filter = `
-      drop-shadow(0 40px 80px rgba(212,160,23,0.5))
-      drop-shadow(0 15px 40px rgba(0,0,0,0.85))
+      drop-shadow(0 35px 75px rgba(255, 200, 0, 0.35))
+      drop-shadow(0 15px 40px rgba(0, 0, 0, 0.9))
     `;
   };
 
@@ -32,99 +30,58 @@ export default function EnvelopeScene({ onClick, isOpen }) {
 
   return (
     <div className="envelope-container">
-      {/* Top diya row */}
-      <div style={{ display: 'flex', gap: '16px', alignItems: 'center', pointerEvents: 'none' }}>
-        {['🪔', '✨', '🪔', '✨', '🪔', '✨', '🪔'].map((e, i) => (
-          <span
-            key={i}
-            style={{
-              fontSize: i % 2 === 0 ? '1.55rem' : '0.9rem',
-              display: 'inline-block',
-              animation: `diyaGlow ${1.4 + i * 0.18}s ease-in-out infinite ${i * 0.28}s`,
-            }}
-          >{e}</span>
-        ))}
+      {/* Sleek Minimalist Gen-Z VIP Pill */}
+      <div className="env-pill-badge">
+        <span className="env-badge-dot" />
+        <span>VIP PASS // DIWALI 2026</span>
+        <span className="env-badge-spark">✨</span>
       </div>
 
+      {/* Catchy Minimalist Cue */}
       <p className="envelope-hint">
-        ✦ Tap the envelope to reveal your invitation ✦
+        TAP TO REVEAL ✨
       </p>
 
       <div className="envelope-wrapper">
         <div
           ref={envRef}
-          className="envelope"
+          className="envelope royal-envelope"
           onClick={onClick}
           onMouseEnter={() => setHovered(true)}
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
           role="button"
-          aria-label="Open Diwali Invitation Card"
+          aria-label="Open Diwali Invitation Pass"
           tabIndex={0}
-          onKeyDown={e => e.key === 'Enter' && onClick()}
+          onKeyDown={(e) => e.key === 'Enter' && onClick()}
           style={{
             transition: hovered ? 'filter 0.1s ease' : 'transform 0.6s ease, filter 0.4s ease',
           }}
         >
-          {/* Garland */}
-          <div className="env-garland">
-            {GARLAND.map(i => (
-              <div key={i} className="garland-dot" style={{ '--d': `${(i * 0.1).toFixed(1)}s` }} />
-            ))}
-          </div>
-
-          {/* Body */}
+          {/* Subtle Royal Texture & Guilloche Lines */}
           <div className="env-body" />
           <div className="env-border" />
+          <div className="env-corner-accent tl" />
+          <div className="env-corner-accent tr" />
+          <div className="env-corner-accent bl" />
+          <div className="env-corner-accent br" />
 
-          {/* Folds */}
+          {/* Precision 3D Folds */}
           <div className="env-left-fold" />
           <div className="env-right-fold" />
           <div className="env-bottom-fold" />
           <div className="env-flap" />
 
-          {/* Wax seal */}
+          {/* Catchy Firecracker Wax Stamp */}
           <div className="env-seal">
-            <div className="seal-circle">🪔</div>
+            <div className="seal-circle firecracker-seal">
+              <span className="seal-firecracker-icon" role="img" aria-label="Firecracker">🎆</span>
+              <div className="seal-spark-ring" />
+              <div className="seal-glint" />
+            </div>
           </div>
-
-          {/* Company text */}
-          <div className="env-company-text">EzStays · Diwali 2026</div>
-
-          {/* Decorative lotus corners on envelope */}
-          {[
-            { top: 9, left: 11 },
-            { top: 9, right: 11 },
-          ].map((pos, i) => (
-            <div key={i} style={{
-              position: 'absolute', ...pos, fontSize: '1.3rem',
-              opacity: 0.7, zIndex: 8, pointerEvents: 'none',
-              filter: 'drop-shadow(0 0 6px rgba(255,100,100,0.6))',
-            }}>🌸</div>
-          ))}
         </div>
       </div>
-
-      {/* Bottom deco row */}
-      <div className="env-bottom-deco" style={{ display: 'flex', gap: '10px', pointerEvents: 'none' }}>
-        {['🌺', '🪔', '🌸', '🪔', '🌺'].map((e, i) => (
-          <span key={i} style={{
-            fontSize: i % 2 === 0 ? '1.1rem' : '1.35rem',
-            display: 'inline-block',
-            animation: `twinkle ${2.2 + i * 0.28}s ease-in-out infinite ${i * 0.22}s`,
-          }}>{e}</span>
-        ))}
-      </div>
-
-      {/* Subtitle */}
-      <div style={{
-        fontFamily: "'Cormorant Garamond', serif",
-        fontSize: '0.7rem',
-        letterSpacing: '4px',
-        color: 'rgba(212,160,23,0.38)',
-        textTransform: 'uppercase',
-        marginTop: '4px',
-      }}>EzStays Corporate · Diwali 2026</div>
     </div>
   );
 }

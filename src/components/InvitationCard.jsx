@@ -1,27 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
-
-/* ── Live Countdown Hook ─────────────────────── */
-function useCountdown(target) {
-  const [time, setTime] = useState({ d: 0, h: 0, m: 0, s: 0 });
-
-  useEffect(() => {
-    const tick = () => {
-      const diff = new Date(target) - new Date();
-      if (diff <= 0) return setTime({ d: 0, h: 0, m: 0, s: 0 });
-      setTime({
-        d: Math.floor(diff / 86400000),
-        h: Math.floor((diff % 86400000) / 3600000),
-        m: Math.floor((diff % 3600000) / 60000),
-        s: Math.floor((diff % 60000) / 1000),
-      });
-    };
-    tick();
-    const id = setInterval(tick, 1000);
-    return () => clearInterval(id);
-  }, [target]);
-
-  return time;
-}
+import React, { useRef, useState, useEffect } from 'react';
 
 /* ── 3D Interactive Tilt on Hover ─────────────── */
 function useTilt(ref) {
@@ -46,29 +23,73 @@ function useTilt(ref) {
   }, []);
 }
 
+/* ── Real Temple Bell Sound Engine ───────────── */
+function playTempleBell() {
+  try {
+    const audio = new Audio('/temple_bell.wav');
+    audio.volume = 0.9;
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        playSynthesizedTempleBell();
+      });
+    }
+  } catch {
+    playSynthesizedTempleBell();
+  }
+}
+
+function playSynthesizedTempleBell() {
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
+    const now = ctx.currentTime;
+    const f0 = 587.33; // D5 brass bell fundamental
+
+    // Authentic brass temple bell partials with acoustic beating and long decay
+    const partials = [
+      { freq: f0 * 0.5, gain: 0.25, decay: 2.8 },    // Hum tone
+      { freq: f0, gain: 0.45, decay: 2.5 },          // Fundamental
+      { freq: f0 + 1.6, gain: 0.32, decay: 2.5 },    // Beating pair (iconic acoustic pulsation)
+      { freq: f0 * 1.183, gain: 0.26, decay: 1.8 },  // Tierce (minor third)
+      { freq: f0 * 1.506, gain: 0.22, decay: 1.5 },  // Quint (fifth)
+      { freq: f0 * 2.0, gain: 0.18, decay: 1.2 },    // Nominal (octave)
+      { freq: f0 * 2.514, gain: 0.12, decay: 0.8 },  // Decime
+      { freq: f0 * 4.01, gain: 0.08, decay: 0.4 },   // Superoctave
+      { freq: f0 * 5.42, gain: 0.06, decay: 0.25 },  // Metallic sheen
+    ];
+
+    partials.forEach(({ freq, gain, decay }) => {
+      const osc = ctx.createOscillator();
+      const g = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, now);
+
+      g.gain.setValueAtTime(0.0001, now);
+      g.gain.exponentialRampToValueAtTime(gain, now + 0.003); // Instant sharp strike
+      g.gain.exponentialRampToValueAtTime(0.00001, now + decay);
+
+      osc.connect(g);
+      g.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + decay + 0.05);
+    });
+  } catch {
+    // Audio fallback
+  }
+}
+
 /* ── Audio Chime Generator ───────────────────── */
 function playFestiveChime(type = 'bell') {
+  if (type === 'deep-bell') {
+    playTempleBell();
+    return;
+  }
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
     const now = ctx.currentTime;
 
-    if (type === 'deep-bell') {
-      // Deep temple bell resonance
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(440, now);
-      osc.frequency.exponentialRampToValueAtTime(220, now + 1.8);
-      gain.gain.setValueAtTime(0.25, now);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.8);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start(now);
-      osc.stop(now + 1.9);
-      return;
-    }
-
-    // Melodious festive bell chord (C5, E5, G5, B5, C6)
     const notes = [523.25, 659.25, 783.99, 987.77, 1046.5];
     notes.forEach((freq, idx) => {
       const osc = ctx.createOscillator();
@@ -94,7 +115,7 @@ function playFestiveChime(type = 'bell') {
 /* ── Celebration Sparkles Burst ──────────────── */
 function triggerSparkles(x, y) {
   const count = 38;
-  const colors = ['#FFD700', '#F5C842', '#FFA500', '#FDE68A', '#FFB703', '#FFFFFF', '#FF4D6D'];
+  const colors = ['#FFD700', '#F5C842', '#FFA500', '#FDE68A', '#FFB703', '#FFFFFF', '#00F5D4'];
   for (let i = 0; i < count; i++) {
     const spark = document.createElement('div');
     const color = colors[Math.floor(Math.random() * colors.length)];
@@ -140,21 +161,18 @@ function DynamicHangingLamp({ length = 55, delay = 0, swayDir = 'left', onLampCl
       onClick={onLampClick}
       title="Click to ring festive bell"
     >
-      {/* Hanging Chain */}
       <div className="lamp-chain" style={{ height: `${length}px` }}>
         {Array.from({ length: Math.floor(length / 7) }).map((_, i) => (
           <span key={i} className="chain-link" />
         ))}
       </div>
 
-      {/* Lamp Vessel & Live Flame */}
       <div className="lamp-head">
         <div className="live-flame" style={{ animationDelay: `${(delay * 0.7).toFixed(2)}s` }}>
           <div className="flame-inner" />
           <div className="flame-glow" />
         </div>
 
-        {/* Brass Diya Vessel */}
         <svg className="lamp-bowl" viewBox="0 0 40 22" width="34" height="19">
           <defs>
             <linearGradient id="brassGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -201,33 +219,17 @@ const DETAILS = [
   {
     icon: '👗',
     tag: 'DRESS CODE',
-    title: 'Traditional / Ethnic',
-    desc: 'Festive Indian Attire',
+    title: 'Festive / Ethnic Chic',
+    desc: 'Traditional Indian Attire',
   },
 ];
 
-/* ── Program Itinerary (Timings Removed & Surprise Maintained) ── */
-const ITINERARY = [
-  {
-    icon: '🪔',
-    title: 'Diwali Puja & Aarti',
-    desc: 'Auspicious prayers invoking divine blessings of Maa Lakshmi for prosperity, health & success',
-  },
-  {
-    icon: '🍽️',
-    title: 'Grand Festive Lunch',
-    desc: 'Curated royal buffet spread featuring traditional festive delicacies and sweet treats',
-  },
-  {
-    icon: '🎯',
-    title: 'Team Activities & Games',
-    desc: 'Engaging festive games, friendly competitions, tambola, and joyous team celebrations',
-  },
-  {
-    icon: '✨',
-    title: 'Grand Finale & Surprises',
-    desc: 'Exciting undisclosed surprises, celebratory music, team memories & evening festivities',
-  },
+/* ── Gen-Z Minimalist Lineup Headings ─────────── */
+const ITINERARY_HEADINGS = [
+  { icon: '🪔', title: 'Puja & Aarti' },
+  { icon: '🍽️', title: 'Royal Festive Lunch' },
+  { icon: '🎯', title: 'Games & Team Shenanigans' },
+  { icon: '✨', title: 'Mega Surprises' },
 ];
 
 /* ── Bottom Live Diyas Array ─────────────────── */
@@ -237,13 +239,10 @@ const BOTTOM_DIYAS = Array.from({ length: 13 }, (_, i) => ({
 }));
 
 export default function InvitationCard({ onClose, onCelebrate }) {
-  const countdown = useCountdown('2026-11-05T10:30:00+05:30');
   const cardRef = useRef(null);
   const overlayRef = useRef(null);
   const [toast, setToast] = useState('');
   useTilt(cardRef);
-
-  const pad = (n) => String(n).padStart(2, '0');
 
   const showToast = (msg) => {
     setToast(msg);
@@ -263,28 +262,6 @@ export default function InvitationCard({ onClose, onCelebrate }) {
     showToast('🎆 Launching Grand Ramayana Drone & Fireworks Show! 🪔');
     if (onCelebrate) {
       setTimeout(() => onCelebrate(), 450);
-    }
-  };
-
-  const handleAddToCalendar = () => {
-    playFestiveChime('bell');
-    const gCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
-      'EzStays Diwali Party 2026'
-    )}&dates=20261105T050000Z/20261105T133000Z&details=${encodeURIComponent(
-      'EzStays Annual Diwali Celebration: Diwali Puja, Office Lunch, Team Activities, and Special Surprises.\nVenue: EzStays Corporate Office, Sector 18, Noida.\nDress Code: Traditional / Ethnic Attire.'
-    )}&location=${encodeURIComponent('EzStays Corporate Office, Sector 18, Noida')}`;
-    window.open(gCalUrl, '_blank', 'noopener,noreferrer');
-    showToast('📅 Added to Calendar!');
-  };
-
-  const handleShare = () => {
-    playFestiveChime('bell');
-    const text = "🪔 You are cordially invited to the EzStays Diwali Celebration 2026! Join us on Thursday, 5th November 2026, 10:30 AM onwards at EzStays Corporate Office, Sector 18, Noida.";
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(text);
-      showToast('📋 Invitation copied to clipboard!');
-    } else {
-      showToast('🪔 EzStays Diwali Celebration 2026');
     }
   };
 
@@ -319,8 +296,8 @@ export default function InvitationCard({ onClose, onCelebrate }) {
         <div className="invitation-card" ref={cardRef}>
           <div className="card-inner">
 
-            {/* Deep Velvet Maroon Texture Backdrop */}
-            <div className="card-maroon-bg" />
+            {/* Deep Royal Midnight Blue & Gold Texture Backdrop */}
+            <div className="card-theme-bg" />
 
             {/* ══════════ DYNAMIC UPPER DECORATION ══════════ */}
             <div className="upper-decoration-container">
@@ -373,29 +350,28 @@ export default function InvitationCard({ onClose, onCelebrate }) {
               </div>
             </div>
 
-            {/* Draped Floral Toran / Marigold Garland */}
+            {/* Draped Floral Toran / Golden Garland */}
             <div className="festive-toran-bar">
               <div className="toran-garland-svg-wrap">
                 <svg viewBox="0 0 800 24" preserveAspectRatio="none" className="toran-svg">
                   <path
                     d="M0,4 Q100,20 200,4 Q300,20 400,4 Q500,20 600,4 Q700,20 800,4"
                     fill="none"
-                    stroke="#F59E0B"
-                    strokeWidth="2.5"
+                    stroke="#F5C842"
+                    strokeWidth="2"
                     strokeDasharray="4,3"
                   />
                   <path
                     d="M0,8 Q100,24 200,8 Q300,24 400,8 Q500,24 600,8 Q700,24 800,8"
                     fill="none"
-                    stroke="#D97706"
-                    strokeWidth="1.5"
+                    stroke="#D4A017"
+                    strokeWidth="1.2"
                   />
-                  {/* Marigold Floral Drops */}
                   {[100, 200, 300, 400, 500, 600, 700].map((cx, i) => (
                     <g key={i}>
-                      <circle cx={cx} cy={cx % 200 === 0 ? 16 : 18} r="4" fill="#FBBF24" />
-                      <circle cx={cx} cy={cx % 200 === 0 ? 16 : 18} r="2" fill="#D97706" />
-                      <circle cx={cx} cy={cx % 200 === 0 ? 21 : 23} r="1.5" fill="#FFD700" />
+                      <circle cx={cx} cy={cx % 200 === 0 ? 16 : 18} r="3.5" fill="#FFD700" />
+                      <circle cx={cx} cy={cx % 200 === 0 ? 16 : 18} r="1.8" fill="#F59E0B" />
+                      <circle cx={cx} cy={cx % 200 === 0 ? 21 : 23} r="1.5" fill="#FFE68A" />
                     </g>
                   ))}
                 </svg>
@@ -415,181 +391,95 @@ export default function InvitationCard({ onClose, onCelebrate }) {
             {/* ══════════ MAIN CARD CONTENT ══════════ */}
             <div className="card-content">
 
-              {/* Top Header Section (Maa Lakshmi Flanked by Shubh-Labh) */}
+              {/* Top Header Section: Gen-Z Official Invitation Pill & Title */}
               <div className="card-top-header">
                 <div className="vip-pill-wrap">
                   <span className="vip-badge">
                     <span className="pulse-dot" />
-                    EZSTAYS ANNUAL CELEBRATION
+                    OFFICIAL INVITATION
                   </span>
-                  <span className="vip-subtag">OFFICIAL INVITATION</span>
-                </div>
-
-                {/* Shubh - Lakshmi - Labh Trio Row */}
-                <div className="auspicious-trio-row">
-                  {/* Left Auspicious Medallion: Shubh */}
-                  <div className="shubh-labh-emblem left-emblem">
-                    <div className="emblem-petal-ring" />
-                    <span className="emblem-text">शुभ</span>
-                    <span className="emblem-sublabel">Auspicious</span>
-                  </div>
-
-                  {/* Central Maa Lakshmi Crest */}
-                  <div className="emblem-crest">
-                    <div className="crest-ring" />
-                    <div className="crest-halo" />
-                    <img
-                      src="/lakshmi_graphic.png"
-                      alt="Maa Lakshmi"
-                      className="crest-img"
-                    />
-                  </div>
-
-                  {/* Right Auspicious Medallion: Labh */}
-                  <div className="shubh-labh-emblem right-emblem">
-                    <div className="emblem-petal-ring" />
-                    <span className="emblem-text">लाभ</span>
-                    <span className="emblem-sublabel">Prosperity</span>
-                  </div>
-                </div>
-
-                <div className="sanskrit-chant">
-                  ॥ ॐ श्रीं ह्रीं क्लीं महालक्ष्म्यै नमः ॥
                 </div>
 
                 <div className="card-header">
-                  <div className="shubh-glow">✦ शुभ दीपावली ✦</div>
+                  <div className="shubh-glow">✦ DIWALI 2026 ✦</div>
                   <h1 className="hero-title">
-                    DIWALI UTSAV <span className="gold-num">2026</span>
+                    DIWALI UTSAV <span className="gold-num">'26</span>
                   </h1>
                   <p className="hero-tagline">
-                    A Celebration of Light, Prosperity &amp; Togetherness
+                    A Celebration of Light, Togetherness &amp; Pure Festive Energy
                   </p>
                 </div>
               </div>
 
-              {/* ══════════ TWO-COLUMN RESPONSIVE BODY GRID ══════════ */}
-              <div className="card-body-grid">
-                
-                {/* Left Column: Cordial Salutation, Countdown & Event Coordinates */}
-                <div className="body-col-left">
-                  <div className="invite-note">
-                    EzStays cordially invites you to join us in celebrating the auspicious festival of lights with your colleagues.
-                  </div>
+              {/* Cordial Salutation */}
+              <div className="invite-note">
+                EzStays cordially invites you to join us in celebrating the festival of lights with the squad.
+              </div>
 
-                  <div className="countdown-section">
-                    <div className="countdown-title">CELEBRATION COMMENCES IN</div>
-                    <div className="countdown-pods">
-                      {[
-                        { val: countdown.d, label: 'DAYS' },
-                        { val: countdown.h, label: 'HOURS' },
-                        { val: countdown.m, label: 'MINS' },
-                        { val: countdown.s, label: 'SECS' },
-                      ].map(({ val, label }) => (
-                        <div key={label} className="time-pod">
-                          <span className="time-val">{pad(val)}</span>
-                          <span className="time-lbl">{label}</span>
-                        </div>
-                      ))}
+              {/* 4-Item Event Coordinates Grid */}
+              <div className="coords-grid">
+                {DETAILS.map((d, i) => (
+                  <div key={i} className="coord-chip">
+                    <div className="coord-icon-box">{d.icon}</div>
+                    <div className="coord-text">
+                      <span className="coord-tag">{d.tag}</span>
+                      <strong className="coord-title">{d.title}</strong>
+                      <span className="coord-desc">{d.desc}</span>
                     </div>
                   </div>
+                ))}
+              </div>
 
-                  {/* 2x2 Event Coordinates */}
-                  <div className="coords-grid">
-                    {DETAILS.map((d, i) => (
-                      <div key={i} className="coord-chip">
-                        <div className="coord-icon-box">{d.icon}</div>
-                        <div className="coord-text">
-                          <span className="coord-tag">{d.tag}</span>
-                          <strong className="coord-title">{d.title}</strong>
-                          <span className="coord-desc">{d.desc}</span>
-                        </div>
+              {/* Gen-Z Minimalist Lineup Strip (1-2 lines, Main Headings Only) */}
+              <div className="genz-itinerary-box">
+                <div className="itinerary-header-mini">
+                  <span className="itinerary-label">✨ SCHEDULE HIGHLIGHTS</span>
+                </div>
+                <div className="genz-itinerary-flow">
+                  {ITINERARY_HEADINGS.map((item, i) => (
+                    <React.Fragment key={i}>
+                      <div className="itinerary-pill-item">
+                        <span className="itinerary-pill-icon">{item.icon}</span>
+                        <span className="itinerary-pill-text">{item.title}</span>
                       </div>
-                    ))}
-                  </div>
+                      {i < ITINERARY_HEADINGS.length - 1 && (
+                        <span className="itinerary-divider">✦</span>
+                      )}
+                    </React.Fragment>
+                  ))}
                 </div>
+              </div>
 
-                {/* Right Column: Program Itinerary & Interactive Actions */}
-                <div className="body-col-right">
-                  <div className="lineup-container">
-                    <div className="lineup-header">
-                      <div className="lineup-title-wrap">
-                        <span className="lineup-icon">🪔</span>
-                        <span className="lineup-title">PROGRAM ITINERARY</span>
-                      </div>
-                      <span className="lineup-badge">SCHEDULE</span>
+              {/* Desktop Centered Celebrate Diwali Action */}
+              <div className="card-actions-wrapper desktop-inline-actions">
+                <div className="action-row single-action">
+                  <button
+                    className="action-btn spark-btn celebrate-spark-btn"
+                    onClick={handleCelebrate}
+                    title="Click here for a Grand Diwali Surprise!"
+                  >
+                    <span className="btn-sparkle">✨</span>
+                    <div className="spark-btn-content">
+                      <span className="spark-btn-main">Celebrate Diwali</span>
+                      <span className="spark-btn-surprise">🎁 Click for Surprise! 🎆</span>
                     </div>
-
-                    <div className="lineup-grid">
-                      {ITINERARY.map((item, i) => (
-                        <div key={i} className="lineup-tile">
-                          <div className="lineup-top">
-                            <span className="lineup-tile-icon">{item.icon}</span>
-                            <h4 className="lineup-tile-title">{item.title}</h4>
-                          </div>
-                          <p className="lineup-tile-desc">{item.desc}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Desktop Inline Actions (Hidden on Mobile, Displayed on Desktop) */}
-                  <div className="card-actions-wrapper desktop-inline-actions">
-                    <div className="action-row">
-                      <button
-                        className="action-btn spark-btn celebrate-spark-btn"
-                        onClick={handleCelebrate}
-                        title="Click here for a Grand Diwali Surprise!"
-                      >
-                        <span className="btn-sparkle">✨</span>
-                        <div className="spark-btn-content">
-                          <span className="spark-btn-main">Celebrate Diwali</span>
-                          <span className="spark-btn-surprise">🎁 Click for Surprise! 🎆</span>
-                        </div>
-                        <span className="btn-sparkle">🪔</span>
-                      </button>
-
-                      <button
-                        className="action-btn cal-btn"
-                        onClick={handleAddToCalendar}
-                        title="Add to Google Calendar"
-                      >
-                        <span>📅 Calendar</span>
-                      </button>
-
-                      <button
-                        className="action-btn share-btn"
-                        onClick={handleShare}
-                        title="Copy Invitation Details"
-                      >
-                        <span>🔗 Share</span>
-                      </button>
-                    </div>
-
-                    {/* Non-flickering Surprise Callout Below the Button */}
-                    <div className="surprise-callout-strip" onClick={handleCelebrate} title="Click to unlock festive surprise!">
-                      <span className="surprise-icon-anim">✨</span>
-                      <span className="surprise-text">Click <strong>"Celebrate Diwali"</strong> above for an exclusive festive surprise!</span>
-                      <span className="surprise-tag-badge">SURPRISE 🎁</span>
-                    </div>
-                  </div>
+                    <span className="btn-sparkle">🪔</span>
+                  </button>
                 </div>
+              </div>
 
-              </div>{/* /card-body-grid */}
-
-              {/* Minimalist Footer */}
-              <footer className="card-footer">
-                <div className="footer-company">EZSTAYS CORPORATE OFFICE</div>
-                <div className="footer-motto">
-                  Sector 18, Noida · Wishing you and your family a blessed, prosperous &amp; happy Diwali! 🪔
-                </div>
+              {/* Gen-Z Minimalist Footer */}
+              <footer className="card-footer genz-footer">
+                <p className="footer-genz-text">
+                  <span className="footer-brand">EzStays</span> — Wishing you and your family a blessed, prosperous &amp; Happy Diwali! 🪔✨
+                </p>
               </footer>
 
             </div>{/* /card-content */}
 
-            {/* ══════════ MOBILE DOCKED ACTIONS (Always Regularly Displayed on Mobile) ══════════ */}
+            {/* ══════════ MOBILE DOCKED ACTIONS ══════════ */}
             <div className="card-actions-wrapper mobile-docked-actions">
-              <div className="action-row">
+              <div className="action-row single-action">
                 <button
                   className="action-btn spark-btn celebrate-spark-btn"
                   onClick={handleCelebrate}
@@ -602,29 +492,6 @@ export default function InvitationCard({ onClose, onCelebrate }) {
                   </div>
                   <span className="btn-sparkle">🪔</span>
                 </button>
-
-                <button
-                  className="action-btn cal-btn"
-                  onClick={handleAddToCalendar}
-                  title="Add to Google Calendar"
-                >
-                  <span>📅 Calendar</span>
-                </button>
-
-                <button
-                  className="action-btn share-btn"
-                  onClick={handleShare}
-                  title="Copy Invitation Details"
-                >
-                  <span>🔗 Share</span>
-                </button>
-              </div>
-
-              {/* Steady Surprise Callout Below the Button */}
-              <div className="surprise-callout-strip" onClick={handleCelebrate} title="Click to unlock festive surprise!">
-                <span className="surprise-icon-anim">✨</span>
-                <span className="surprise-text">Click <strong>"Celebrate Diwali"</strong> above for an exclusive festive surprise!</span>
-                <span className="surprise-tag-badge">SURPRISE 🎁</span>
               </div>
             </div>
 
@@ -647,9 +514,9 @@ export default function InvitationCard({ onClose, onCelebrate }) {
                     <svg className="diya-earthen-cup" viewBox="0 0 32 16" width="28" height="14">
                       <defs>
                         <linearGradient id={`clayGrad-${id}`} x1="0%" y1="0%" x2="100%" y2="100%">
-                          <stop offset="0%" stopColor="#FFD54F" />
-                          <stop offset="40%" stopColor="#C87028" />
-                          <stop offset="100%" stopColor="#5D1B00" />
+                          <stop offset="0%" stopColor="#FFE082" />
+                          <stop offset="50%" stopColor="#D4A017" />
+                          <stop offset="100%" stopColor="#8C6005" />
                         </linearGradient>
                       </defs>
                       <path

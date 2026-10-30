@@ -160,54 +160,45 @@ class RealisticSoundEngine {
 }
 
 const sfxEngine = new RealisticSoundEngine();
-sfxEngine.muted = true; // Automatically mute fireworks sound by default
+sfxEngine.muted = true; // SFX turned off
 
 export default function RamayanaDroneShow({ onClose }) {
   const [videoMode, setVideoMode] = useState('local'); // 'local' or 'youtube'
-  const [isBhajanMuted, setIsBhajanMuted] = useState(false);
-  const [isSfxMuted, setIsSfxMuted] = useState(true); // Automatically muted!
+  const [isVideoMuted, setIsVideoMuted] = useState(false);
+  const [isSfxMuted, setIsSfxMuted] = useState(true); // SFX turned off by default
   const [isPlaying, setIsPlaying] = useState(true);
 
   const videoRef = useRef(null);
   const ambientVideoRef = useRef(null);
-  const audioRef = useRef(null);
   const fireworksCanvasRef = useRef(null);
 
   const fireworksRef = useRef([]);
   const animFrameRef = useRef(null);
 
-  // Ensure DOM video elements are strictly muted and start playback
+  // Initialize videos & start playback
   useEffect(() => {
-    sfxEngine.playShankh();
+    // Start ambient background strictly muted
+    if (ambientVideoRef.current) {
+      ambientVideoRef.current.muted = true;
+      ambientVideoRef.current.defaultMuted = true;
+      ambientVideoRef.current.playsInline = true;
+      ambientVideoRef.current.play().catch(() => {});
+    }
 
-    // Start video playback with explicit muted properties to satisfy autoplay policies
-    const initVideo = (el) => {
-      if (el) {
-        el.muted = true;
-        el.defaultMuted = true;
-        el.playsInline = true;
-        el.setAttribute('muted', '');
-        el.setAttribute('playsinline', '');
-        el.setAttribute('autoplay', '');
-        const p = el.play();
-        if (p !== undefined) {
-          p.catch((err) => {
-            console.warn('Autoplay waiting for interaction:', err);
-          });
-        }
-      }
-    };
-
-    initVideo(videoRef.current);
-    initVideo(ambientVideoRef.current);
-
-    // Auto-start devotional bhajan
-    if (audioRef.current) {
-      audioRef.current.volume = 0.85;
-      const playPromise = audioRef.current.play();
-      if (playPromise !== undefined) {
-        playPromise.catch(() => {
-          // Will resume automatically on first click
+    // Start main video with sound
+    if (videoRef.current) {
+      videoRef.current.playsInline = true;
+      videoRef.current.volume = 1.0;
+      videoRef.current.muted = isVideoMuted;
+      const p = videoRef.current.play();
+      if (p !== undefined) {
+        p.catch(() => {
+          // If browser policy blocks unmuted autoplay, mute initially to allow playback
+          if (videoRef.current) {
+            videoRef.current.muted = true;
+            setIsVideoMuted(true);
+            videoRef.current.play().catch(() => {});
+          }
         });
       }
     }
@@ -218,16 +209,16 @@ export default function RamayanaDroneShow({ onClose }) {
     setVideoMode((prev) => (prev === 'local' ? 'youtube' : 'local'));
   };
 
-  // Toggle Bhajan Audio
-  const toggleBhajan = () => {
-    if (!audioRef.current) return;
-    if (isBhajanMuted) {
-      audioRef.current.muted = false;
-      audioRef.current.play().catch(() => {});
-      setIsBhajanMuted(false);
+  // Toggle Video Sound
+  const toggleVideoSound = () => {
+    if (!videoRef.current) return;
+    if (videoRef.current.muted) {
+      videoRef.current.muted = false;
+      setIsVideoMuted(false);
+      videoRef.current.play().catch(() => {});
     } else {
-      audioRef.current.muted = true;
-      setIsBhajanMuted(true);
+      videoRef.current.muted = true;
+      setIsVideoMuted(true);
     }
   };
 
@@ -245,20 +236,14 @@ export default function RamayanaDroneShow({ onClose }) {
       if (isPlaying) {
         videoRef.current.pause();
         if (ambientVideoRef.current) ambientVideoRef.current.pause();
-        if (audioRef.current) audioRef.current.pause();
         setIsPlaying(false);
       } else {
         videoRef.current.play().catch(() => {});
         if (ambientVideoRef.current) ambientVideoRef.current.play().catch(() => {});
-        if (audioRef.current && !isBhajanMuted) audioRef.current.play().catch(() => {});
         setIsPlaying(true);
       }
     } else {
       setIsPlaying((p) => !p);
-      if (audioRef.current) {
-        if (isPlaying) audioRef.current.pause();
-        else audioRef.current.play().catch(() => {});
-      }
     }
   };
 
@@ -402,13 +387,9 @@ export default function RamayanaDroneShow({ onClose }) {
     };
   }, [spawnFirework]);
 
-  // Click on screen to trigger interactive fireworks & ensure audio starts
+  // Click on screen to trigger interactive fireworks
   const handleSkyClick = (e) => {
-    // If bhajan is paused due to browser autoplay policies, play on user gesture
-    if (audioRef.current && audioRef.current.paused && !isBhajanMuted) {
-      audioRef.current.play().catch(() => {});
-    }
-    // Also resume video if paused
+    // Resume video if paused
     if (videoMode === 'local' && videoRef.current && videoRef.current.paused && isPlaying) {
       videoRef.current.play().catch(() => {});
       if (ambientVideoRef.current) ambientVideoRef.current.play().catch(() => {});
@@ -422,15 +403,12 @@ export default function RamayanaDroneShow({ onClose }) {
 
   return (
     <div className="drone-show-overlay" onClick={handleSkyClick}>
-      {/* ── Soulful Devotional Ram Bhajan Audio ── */}
-      <audio ref={audioRef} src="/ram_bhajan.m4a" loop />
-
-      {/* ── Ambient Blurred Backdrop ── */}
+      {/* ── Ambient Blurred Backdrop (Strictly Muted) ── */}
       <div className="ambient-video-wrapper">
         {videoMode === 'local' ? (
           <video
             ref={ambientVideoRef}
-            src="/drone_show_clip.mp4"
+            src="/video_20261030_160945.mp4"
             autoPlay
             loop
             muted
@@ -450,16 +428,15 @@ export default function RamayanaDroneShow({ onClose }) {
         style={{ cursor: 'crosshair' }}
       />
 
-      {/* ── Central Cinematic Theater Video Frame (Elevated with highest z-index) ── */}
+      {/* ── Central Cinematic Theater Video Frame (With Integrated Audio) ── */}
       <div className="drone-theater-stage">
         <div className="theater-video-card" onClick={(e) => e.stopPropagation()}>
           {videoMode === 'local' ? (
             <video
               ref={videoRef}
-              src="/drone_show_clip.mp4"
+              src="/video_20261030_160945.mp4"
               autoPlay
               loop
-              muted
               playsInline
               preload="auto"
               onError={() => {
@@ -524,14 +501,14 @@ export default function RamayanaDroneShow({ onClose }) {
             <span className="btn-mobile-icon">{videoMode === 'local' ? '⚡' : '📺'}</span>
           </button>
 
-          {/* Devotional Bhajan Toggle */}
+          {/* Video Soundtrack Audio Toggle */}
           <button
-            className={`ctrl-btn bhajan-btn ${!isBhajanMuted ? 'active-audio' : ''}`}
-            onClick={toggleBhajan}
-            title={isBhajanMuted ? 'Play Ram Siya Ram Bhajan' : 'Mute Bhajan'}
+            className={`ctrl-btn bhajan-btn ${!isVideoMuted ? 'active-audio' : ''}`}
+            onClick={toggleVideoSound}
+            title={isVideoMuted ? 'Unmute Video Audio' : 'Mute Video Audio'}
           >
-            <span className="btn-full-text">{isBhajanMuted ? '🔇 Bhajan' : '🎵 Ram Siya Ram'}</span>
-            <span className="btn-mobile-icon">{isBhajanMuted ? '🔇' : '🎵'}</span>
+            <span className="btn-full-text">{isVideoMuted ? '🔇 Audio Off' : '🔊 Video Audio'}</span>
+            <span className="btn-mobile-icon">{isVideoMuted ? '🔇' : '🔊'}</span>
           </button>
 
           {/* Fireworks Sound Toggle */}
